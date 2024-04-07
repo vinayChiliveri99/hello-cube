@@ -1,67 +1,76 @@
 import * as THREE from 'three'
 
-const canvas = document.querySelector('canvas.glcanvas')
+const canvas = document.querySelector('canvas.glcanvas');
 
 
-// we need 4 elements to rendere something on screen.
-/* 
-    1. Scene
-    2. Object
-    3. Camera
-    4. Renderer
-*/
+
+// to show something on screen we need 4 elements
+/**
+ * scene
+ * object = (geometry + material)
+ * camera
+ * renderer
+ */
 
 // 1. scene
-const scene = new THREE.Scene()
+const scene = new THREE.Scene();
 
-// 2. Object is nothing but a Mesh which is a combination of Material and Geometry.
-
-const geometry = new THREE.BoxGeometry(1, 1, 1)
-const material = new THREE.MeshBasicMaterial({ color: 'purple' })
-
-const mesh = new THREE.Mesh(geometry, material)
-
-// we need to add it to the scene.
-scene.add(mesh)
+// creating group to manage all objects
+const group = new THREE.Group();
 
 
-// 3. camera
-// we need width and height for aspect ratio to pass a arg for camera.
+// 2. object = combo (geometry, material)
 
+// const geometry = new THREE.BoxGeometry(1,1,1)
+// const material = new THREE.MeshBasicMaterial({
+//     color: 'red'
+// })
+
+// const mesh = new THREE.Mesh(geometry, material)
+
+const cube1 = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    new THREE.MeshBasicMaterial( {color: 'purple'})
+)
+
+group.add(cube1)
+
+const cube2 = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    new THREE.MeshBasicMaterial({ color: 'red' })
+)
+
+cube2.position.x = -1
+cube2.position.y = -1
+
+group.add(cube2)
+
+const cube3 = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    new THREE.MeshBasicMaterial({ color: 'green' })
+)
+
+group.add(cube3)
+cube3.position.x = 1
+cube3.position.y = 1
+
+// 3.camera
 const sizes = {
-    width: 800,
-    height: 600
+    width: 600,
+    height: 800
 }
 
+// const camera = new THREE.PerspectiveCamera(fov, aspectratio, near, far);
 const camera = new THREE.PerspectiveCamera(75, sizes.width/sizes.height, 0.1, 2000);
 camera.position.z = 3
-
-scene.add(camera);
-
-// AxesHelper
-// const axesHelper = new THREE.AxesHelper(3);
-// scene.add(axesHelper)
-
-// positioning
-// mesh.position.x = 2
-// mesh.position.y = 1
-// mesh.position.z = -0.2
-// mesh.position.set(2, 1, -0.2)
-
-// scaling
-// mesh.scale.x = 2
-// mesh.scale.y = 2
-// mesh.scale.z = 2
-// mesh.scale.set(2, 2, 2)
+group.add(camera);
 
 // 4. renderer
-
 const renderer = new THREE.WebGLRenderer({
-    canvas: canvas
+    canvas
 })
 
 renderer.setSize(sizes.width, sizes.height)
+scene.add(group)
 
-// now call the renderer with scene and camera
 renderer.render(scene, camera)
-
