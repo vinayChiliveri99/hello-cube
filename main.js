@@ -1,5 +1,9 @@
 import * as THREE from 'three'
 
+// lets add controls, so we can rotate and move the camera using our mouse.
+// we need orbit controls an inbuild control class.
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+
 const canvas = document.querySelector('canvas.glcanvas')
 
 
@@ -17,7 +21,7 @@ const scene = new THREE.Scene()
 // 2. Object is nothing but a Mesh which is a combination of Material and Geometry.
 
 const geometry = new THREE.BoxGeometry(1, 1, 1)
-const material = new THREE.MeshBasicMaterial({ color: 'purple' })
+const material = new THREE.MeshBasicMaterial({ color: 'red' })
 
 const mesh = new THREE.Mesh(geometry, material)
 
@@ -29,8 +33,9 @@ scene.add(mesh)
 // we need width and height for aspect ratio to pass a arg for camera.
 
 const sizes = {
-    width: 800,
-    height: 600
+    // adjusting to the viewport height and width
+    width: window.innerWidth,
+    height: window.innerHeight
 }
 
 const camera = new THREE.PerspectiveCamera(75, sizes.width/sizes.height, 0.1, 2000);
@@ -38,21 +43,18 @@ camera.position.z = 3
 
 scene.add(camera);
 
-// AxesHelper
-// const axesHelper = new THREE.AxesHelper(3);
-// scene.add(axesHelper)
+// create controls and instantiate them, it takes camera and canvas as args.
+const controls = new OrbitControls(camera, canvas)
 
-// positioning
-// mesh.position.x = 2
-// mesh.position.y = 1
-// mesh.position.z = -0.2
-// mesh.position.set(2, 1, -0.2)
+// add damping to it, damping will smooth the animation, 
+// to make damping work we need to update controls in every frame
+controls.enableDamping = true
 
-// scaling
-// mesh.scale.x = 2
-// mesh.scale.y = 2
-// mesh.scale.z = 2
-// mesh.scale.set(2, 2, 2)
+// initially camera point at the center of the object.
+// can modify that so that the camera look at some other point
+
+// controls.target.y = 1
+
 
 // 4. renderer
 
@@ -77,8 +79,11 @@ const tick = () => {
 
     const elapsedtime = clock.getElapsedTime()
 
-    mesh.rotation.x = elapsedtime
-    mesh.position.y = Math.sin(elapsedtime)
+    // mesh.rotation.x = elapsedtime
+    // mesh.position.y = Math.sin(elapsedtime)
+
+    controls.update()
+
     renderer.render(scene, camera)
     window.requestAnimationFrame(tick)
 }
