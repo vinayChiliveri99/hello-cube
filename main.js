@@ -63,5 +63,25 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 
 // now call the renderer with scene and camera
-renderer.render(scene, camera)
+// renderer.render(scene, camera)
+
+// we need a tick function using requestAnimationFrame, to create the animations.
+
+// to rotate the object at the same speed regardless of the framerate of device
+// we can use elapsedtime from Clock class
+
+const clock = new THREE.Clock();
+
+
+const tick = () => {
+
+    const elapsedtime = clock.getElapsedTime()
+
+    mesh.rotation.x = elapsedtime
+    mesh.position.y = Math.sin(elapsedtime)
+    renderer.render(scene, camera)
+    window.requestAnimationFrame(tick)
+}
+
+tick()
 
